@@ -1,49 +1,47 @@
-# Litarvan's LightDM WebKit2 theme
+# Minimal LightDM WebKit2 Theme Fork
 
-[![Arch Release](https://img.shields.io/badge/arch-3.2.0-blue.svg?style=flat-square)](https://www.archlinux.org/packages/community/any/lightdm-webkit-theme-litarvan/) &nbsp;[![Latest Release](https://img.shields.io/github/release/Litarvan/lightdm-webkit-theme-litarvan.svg?style=flat-square&label=github)](https://github.com/Litarvan/lightdm-webkit-theme-litarvan/releases) &nbsp;![Github downloads](https://img.shields.io/github/downloads/Litarvan/lightdm-webkit-theme-litarvan/total.svg?style=flat-square)
+This is a minimal fork of Litarvan's LightDM WebKit2 theme, focusing solely on the login page and its functionality. This theme is used in nody-greeter and is deployed as a .tar.gz file that is unzipped to `/usr/share/web-greeter/themes/litarvan`.
 
-**=> Screenshots below**
+## Overview
 
-# [Live testing (3.2.0)](https://litarvan.github.io/lightdm-webkit-theme-litarvan/)
+- This fork contains only the essential login page functionality.
+- It is designed to work with [nody-greeter](https://github.com/JezerM/nody-greeter).
+- The theme is distributed as a .tar.gz file.
+- Installation path: `/usr/share/web-greeter/themes/litarvan`
 
-# Customize release
-Backgrounds can be added in `/usr/share/backgrounds` and chosen in the Theming view (bottom right corner of the Setup view).
+## Building
 
-Customize the OS logo within `/usr/share/lightdm-webkit/themes/litarvan/img/os.xxxxxxxx.png`
-
-# Installation
-
-## Arch Linux (3.2.0)
+To generate the .tar.gz file:
 
 ```
-pacman -S --needed lightdm-webkit2-greeter lightdm-webkit-theme-litarvan
+./build.sh
 ```
 
-* If not already done, edit `/etc/lightdm/lightdm.conf` and set `greeter-session=lightdm-webkit2-greeter` .
-* Then edit `/etc/lightdm/lightdm-webkit2-greeter.conf` and set `theme` or `webkit-theme` to `litarvan` .
+This will create a .tar.gz file in the current directory.
 
-## Manual (3.2.0)
+## Installation
 
-* Install lightdm-webkit2-greeter using your dependency manager if not already done
-* Download and unzip the [tar file](https://github.com/Litarvan/lightdm-webkit-theme-litarvan/releases) in `/usr/share/lightdm-webkit/themes/litarvan/`
-* Edit `/etc/lightdm/lightdm-webkit2-greeter.conf` and set `theme` to `litarvan`.
+1. Run the build script to generate the .tar.gz file.
+2. Extract the contents of the .tar.gz file to `/usr/share/web-greeter/themes/litarvan`.
+3. Configure your greeter to use this theme (see Configuration section).
 
-# Building (latest features in development, future 3.3.0)
+## Configuration
 
+To configure LightDM to use this theme, edit the `/etc/usr/lightdm/web-greeter.yml` file and modify the theme setting:
+
+```yaml
+theme: litarvan
 ```
-$ ./build.sh
-```
 
-Will generate a lightdm-webkit-theme-litarvan-3.2.0.tar.gz in the current folder.
+## Customization
 
-# Screenshots
+- Backgrounds can be added to `/usr/share/backgrounds`.
+- The OS logo can be customized by replacing the file at `/usr/share/web-greeter/themes/litarvan/img/os.xxxxxxxx.png`.
 
-![Setup screenshot](https://litarvan.github.io/lightdm-webkit-theme-litarvan/setup_view.png)
+## Original Theme Information
 
-![Splash screenshot](https://litarvan.github.io/lightdm-webkit-theme-litarvan/splash_view.png)
+This fork is based on Litarvan's LightDM WebKit2 theme. For more information about the original theme, including screenshots and additional features, please visit the [original repository](https://github.com/Litarvan/lightdm-webkit-theme-litarvan).
 
-![Login screnshot](https://litarvan.github.io/lightdm-webkit-theme-litarvan/login_view.png)
+## License
 
-![Desktops screenshot](https://litarvan.github.io/lightdm-webkit-theme-litarvan/desktops_view.png)
-
-![Theming screenshot](https://litarvan.github.io/lightdm-webkit-theme-litarvan/theming_view.png)
+This fork maintains the same license as the original theme. Please refer to the LICENSE file for more information.
