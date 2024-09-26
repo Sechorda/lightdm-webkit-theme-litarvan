@@ -27,7 +27,17 @@ This will create a .tar.gz file in the current directory.
 
 ## Configuration
 
-To configure LightDM to use this theme, edit the `/etc/usr/lightdm/web-greeter.yml` file and modify the theme setting:
+### Setting up with LightDM
+
+Inside `/etc/lightdm/lightdm.conf`, below a Seat configuration, add:
+
+```
+greeter-session=nody-greeter
+```
+
+### Configuring the theme
+
+To configure nody-greeter to use this theme, edit the `/etc/usr/lightdm/web-greeter.yml` file and modify the theme setting:
 
 ```yaml
 theme: litarvan
