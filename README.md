@@ -4,7 +4,7 @@ This is a minimal fork of Litarvan's LightDM WebKit2 theme, focusing solely on t
 
 ## Overview
 
-- This fork contains only the essential login page functionality.
+- This fork contains only the essential login page functionality, changing settings via the config files(hardcoded)
 - It is designed to work with [nody-greeter](https://github.com/JezerM/nody-greeter).
 - The theme is distributed as a .tar.gz file.
 - Installation path: `/usr/share/web-greeter/themes/litarvan`
