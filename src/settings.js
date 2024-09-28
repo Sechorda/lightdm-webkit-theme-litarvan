@@ -6,7 +6,7 @@ if (local === 'undefined') {
 
 export let settings = (local ? JSON.parse(local) : null) || {
     roundAvatar: false,
-    disableAvatar: false,
+    disableAvatar: true,
     disableZoom: false,
     clock12: false,
     disablePowerTexts: false,

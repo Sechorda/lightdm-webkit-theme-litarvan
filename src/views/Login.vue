@@ -11,7 +11,7 @@
             </div>
 
             <div id="login-form">
-                <l-select-item mode="user" :item="settings.user" @select="!immutable && $router.push('/base/select/user')" :noicon="true" />
+                <l-select-item mode="user" :item="settings.user" :noicon="true" />
 
                 <form v-if="!immutable" @submit.prevent="submit">
                     <input id="password" type="password" v-model="password" :placeholder="passwordLabel" :readonly="logging" :class="{'error': error}" v-theming="['border-bottom-color']" v-italic.custom />
@@ -33,8 +33,6 @@
         </div>
 
         <div v-if="!immutable">
-            <l-power-button id="settings" type="settings"></l-power-button>
-
             <transition name="power-fade">
                 <div id="power-list" v-if="powerList">
                     <l-power-button v-if="canHibernate" id="hibernate" type="hibernate"></l-power-button>
@@ -349,12 +347,6 @@
 
     .item.user {
         display: inline-block;
-    }
-
-    #settings {
-        position: absolute;
-        bottom: 20px;
-        left: 20px;
     }
 
     #hibernate {

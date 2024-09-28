@@ -1,5 +1,5 @@
 <template>
-    <div class="item" :class="{ 'user': mode === 'user', 'desktop': mode === 'desktop', 'selected': selected }" v-theming="['border-bottom-color']" v-italic @click="select()">
+    <div class="item" :class="{ 'user': mode === 'user', 'desktop': mode === 'desktop', 'selected': selected }" v-theming="['border-bottom-color']" v-italic>
         <div class="icon-container" v-if="!noicon">
             <img class="icon" :src="icon()" />
         </div>
@@ -57,7 +57,9 @@
         },
         methods: {
             select() {
-                this.$emit('select');
+                if (this.mode !== 'user') {
+                    this.$emit('select');
+                }
             },
             icon() {
                 if (this.mode === 'user') {
@@ -103,7 +105,7 @@
         background: rgba(255, 255, 255, 0.055);
     }
 
-    .item:hover {
+    .item.desktop:hover {
         cursor: pointer;
         background: rgba(255, 255, 255, 0.115);
     }
