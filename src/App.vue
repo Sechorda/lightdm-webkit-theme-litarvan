@@ -8,9 +8,6 @@
 import { settings } from '@/settings';
 
 export default {
-    mounted() {
-        this.$router.push('/');
-    },
     data() {
         return {
             disableZoom: settings.disableZoom
