@@ -32,16 +32,17 @@
         </div>
 
         <div v-if="!immutable" class="power-buttons">
-          <transition name="power-fade">
-            <div id="power-list" v-if="powerList">
-              <l-power-button v-if="canHibernate" id="hibernate" type="hibernate"></l-power-button>
-              <l-power-button v-if="canSuspend" id="suspend" type="suspend"></l-power-button>
-              <l-power-button id="reboot" type="restart"></l-power-button>
+          <div class="power-button-wrapper">
+            <transition name="power-fade">
+              <div id="power-list" v-if="powerList">
+                <l-power-button v-if="canHibernate" id="hibernate" type="hibernate"></l-power-button>
+                <l-power-button v-if="canSuspend" id="suspend" type="suspend"></l-power-button>
+                <l-power-button id="reboot" type="restart"></l-power-button>
+              </div>
+            </transition>
+            <div class="main-power-button" @click="powerList = !powerList">
+              <l-power-button id="shutdown" type="shutdown" :disabled="!powerList"></l-power-button>
             </div>
-          </transition>
-
-          <div @click="powerList = !powerList">
-            <l-power-button id="shutdown" type="shutdown" :disabled="!powerList"></l-power-button>
           </div>
         </div>
       </div>
@@ -200,7 +201,7 @@ export default {
     border-radius: 10px;
     padding: 30px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.1); /* Added thin border */
+    border: 1px solid rgba(255, 255, 255, 0.1);
   }
 
   #login-form {
@@ -277,20 +278,28 @@ export default {
     position: absolute;
     bottom: 20px;
     right: 20px;
+  }
+
+  .power-button-wrapper {
     display: flex;
-    flex-direction: column;
-    align-items: flex-end;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+  }
+
+  .main-power-button {
+    z-index: 2;
   }
 
   #power-list {
     display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    margin-bottom: 10px;
+    flex-direction: row;
+    align-items: center;
+    margin-right: 10px;
   }
 
   #hibernate, #suspend, #reboot {
-    margin-bottom: 10px;
+    margin-right: 10px;
   }
 
   @media (max-height: 850px) {
@@ -300,12 +309,13 @@ export default {
     }
   }
 
-  .power-fade-enter-active {
+  .power-fade-enter-active, .power-fade-leave-active {
     transition: all .3s ease;
   }
 
-  .power-fade-enter {
+  .power-fade-enter, .power-fade-leave-to {
     opacity: 0;
+    transform: translateX(10px);
   }
 
   // Compact mode styles
