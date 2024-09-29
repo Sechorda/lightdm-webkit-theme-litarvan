@@ -1,90 +1,36 @@
 <template>
-    <div class="item" :class="{ 'user': mode === 'user', 'desktop': mode === 'desktop', 'selected': selected }" v-theming="['border-bottom-color']" v-italic>
+    <div class="item" :class="{ 'user': isUser, 'desktop': !isUser, 'selected': selected }" v-theming="['border-bottom-color']" v-italic>
         <div class="icon-container" v-if="!noicon">
-            <img class="icon" :src="icon()" />
+            <img class="icon" :src="icon" />
         </div>
 
-        {{ mode === 'user' ? item.display_name : item.name }} <span v-if="mode === 'user' && !settings.hideUsername">/ <span class="username">{{ item.username }}</span></span>
+        <template v-if="isUser">
+            User: <span class="username">{{ item.username }}</span>
+        </template>
+        <template v-else>
+            AwesomeWM
+        </template>
     </div>
 </template>
 
 <script>
     import { avatar, settings } from '@/settings';
 
-    // key is environment name, value is icon name. Sorted by key
-    const environments = {
-        'awesome': 'awesome',
-        'bspwm': 'bspwm',
-        'budgie': 'budgie',
-        'cinnamon': 'cinnamon',
-        'dde': 'deepin',
-        'deepin': 'deepin',
-        'dwm': 'dwm',
-        'elementary': 'elementary',
-        'enlightenment': 'enlightenment',
-        'exwm': 'exwm',
-        'gnome': 'gnome',
-        'i3': 'i3',
-        'kde': 'kde',
-        'kodi': 'kodi',
-        'kubuntu': 'kde',
-        'liri': 'liri',
-        'lxde': 'lxde',
-        'lxqt': 'lxde',
-        'mate': 'mate',
-        'mint': 'cinnamon',
-        'openbox': 'openbox',
-        'pantheon': 'elementary',
-        'plasma': 'kde',
-        'qtitle': 'qtitle',
-        'solus': 'budgie',
-        'sway': 'sway',
-        'ubuntu': 'ubuntu',
-        'unity': 'ubuntu',
-        'xfce': 'xfce',
-        'xmonad': 'xmonad',
-        'xubuntu': 'xfce',
-    }
-
     export default {
         name: 'l-select-item',
-        props: ['mode', 'item', 'selected', 'noicon'],
+        props: ['item', 'selected', 'noicon', 'isUser'],
 
         data() {
             return {
                 settings,
             };
         },
-        methods: {
-            select() {
-                if (this.mode !== 'user') {
-                    this.$emit('select');
-                }
-            },
+        computed: {
             icon() {
-                if (this.mode === 'user') {
+                if (this.isUser) {
                     return avatar(this.item.image);
                 }
-
-                if (this.mode === 'desktop') {
-                    if (!this.item?.key) {
-                        return '';
-                    }
-
-                    const key = this.item.key.toLowerCase();
-                    let icon = environments[Object.keys(environments).find((env) => key.includes(env))];
-
-                    if (!icon && /e[1-9]{2}/g.test(key)) {
-                        icon = 'enlightenment';
-                    }
-
-
-                    if (!icon) {
-                        return '';
-                    }
-
-                    return require('../assets/images/desktops/' + icon + '.png');
-                }
+                return require('../assets/images/desktops/awesome.png');
             }
         }
     };
@@ -93,10 +39,8 @@
 <style lang="scss" scoped>
     .item {
         font-family: 'Lato', 'Noto Sans', sans-serif;
-
         border-radius: 5px;
         transition: background-color 125ms ease-in-out;
-
         min-width: 150px;
     }
 
@@ -105,15 +49,9 @@
         background: rgba(255, 255, 255, 0.055);
     }
 
-    .item.desktop:hover {
-        cursor: pointer;
-        background: rgba(255, 255, 255, 0.115);
-    }
-
     .item.desktop {
         font-weight: 300;
         font-size: 44px;
-
         padding: 7px 19px;
         margin-bottom: 20px;
     }
@@ -121,9 +59,7 @@
     .item.user {
         font-weight: 300;
         font-size: 42px;
-
         padding: 3px 18px 8px;
-
         margin-bottom: 25px;
     }
 
@@ -133,10 +69,8 @@
 
     .icon-container {
         display: inline-block;
-
         width: 45px;
         height: 45px;
-
         margin-right: 6px;
     }
 

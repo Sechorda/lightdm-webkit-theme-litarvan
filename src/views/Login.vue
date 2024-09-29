@@ -1,34 +1,29 @@
 <template>
     <div class="login" :class="{ 'compact': isCompact }">
         <div id="top-container" v-if="isCompact">
-            <l-clock :small="true" />
-            <l-additions :small="true" :preview="preview" />
+            <!-- Removed l-clock and l-additions components -->
         </div>
 
-        <div id="login-content" :class="{ 'no-avatar': settings.disableAvatar }">
-            <div id="avatar" v-if="!settings.disableAvatar">
-                <img id="avatar-image" :class="{ 'round': settings.roundAvatar }" :src="avatar(settings.user.image)" />
-            </div>
+        <div class="login-wrapper">
+            <div id="login-content" class="dark-background-card">
+                <div id="login-form">
+                    <l-select-item :item="settings.user" :noicon="true" :isUser="true" />
 
-            <div id="login-form">
-                <l-select-item mode="user" :item="settings.user" :noicon="true" />
+                    <form v-if="!immutable" @submit.prevent="submit">
+                        <input id="password" type="password" v-model="password" :placeholder="passwordLabel" :readonly="logging" :class="{'error': error}" v-theming="['border-bottom-color']" v-italic.custom />
+                    </form>
+                    <div v-else id="password" class="immutable"></div>
+                    <div id="info" v-italic>
+                        {{ info }}
+                    </div>
 
-                <form v-if="!immutable" @submit.prevent="submit">
-                    <input id="password" type="password" v-model="password" :placeholder="passwordLabel" :readonly="logging" :class="{'error': error}" v-theming="['border-bottom-color']" v-italic.custom />
-                </form>
-                <div v-else id="password" class="immutable"></div>
-                <div id="info" v-italic>
-                    {{ info }}
+                    <div v-if="!isCompact" class="error-msg">
+                        {{ message }}
+                    </div>
                 </div>
-
-                <div v-if="!isCompact" class="error-msg">
+                <div v-if="isCompact" class="error-msg">
                     {{ message }}
                 </div>
-
-                <l-select-item mode="desktop" :item="settings.desktop" @select="!immutable && $router.push('/base/select/desktop')" />
-            </div>
-            <div v-if="isCompact" class="error-msg">
-                {{ message }}
             </div>
         </div>
 
@@ -50,16 +45,14 @@
 
 <script>
     import LPowerButton from '@/components/PowerButton.vue';
-    import LClock from '@/components/Clock.vue';
     import LSelectItem from '@/components/SelectItem';
-    import LAdditions from '@/components/Additions.vue';
 
-    import { avatar, settings } from '@/settings';
+    import { settings } from '@/settings';
     import { trans } from '@/translations';
 
     export default {
         name: 'l-login',
-        components: { LSelectItem, LPowerButton, LClock, LAdditions },
+        components: { LSelectItem, LPowerButton },
         props: ['immutable', 'compact', 'preview'],
 
         data() {
@@ -96,7 +89,6 @@
             window.removeEventListener('keyup', this.keyup);
         },
         methods: {
-            avatar,
             keyup(event) {
                 if (event.getModifierState("CapsLock")) {
                     this.info = trans('capsLock');
@@ -107,7 +99,7 @@
             begin() {
                 this.loginInSession = true;
                 lightdm_begin_login(this.settings.user.username, () => {
-                    setTimeout(() => lightdm_start(this.settings.desktop.key), 400);
+                    setTimeout(() => lightdm_start('awesome'), 400);
                     this.$router.push(settings.disableFade ? '/base' : '/intro/login');
                 }, () => {
                     this.error = true;
@@ -150,203 +142,101 @@
 <style lang="scss" scoped>
     @import '../theme';
 
-    .login.compact {
-        .clock {
-            margin-top: 6vh;
-        }
-
-        #avatar, #login-form {
-            display: inline-block;
-        }
-
-        #avatar {
-            margin-top: 0;
-        }
-
-        #login-form {
-            text-align: left;
-            margin-left: 42px;
-            margin-top: 31px;
-        }
-
-        .item.user {
-            margin-bottom: 0;
-        }
-
-        #login-content {
-            margin-top: 10.5vh;
-        }
-
-        @media (min-height: 900px) {
-            #login-content {
-                margin-top: 14.25vh;
-            }
-        }
-
-        #login-content.no-avatar {
-            .item.user {
-                margin-bottom: 2.0vh;
-            }
-
-            .item.desktop {
-                margin-top: 4vh;
-            }
-
-            #login-form {
-                margin-left: 0;
-                text-align: center;
-            }
-        }
-
-        .item.user {
-            margin-top: 0;
-        }
-
-        #password {
-            margin-top: 2.5vh;
-        }
-
-        #info {
-            font-size: 17px;
-            height: 26px;
-            margin-top: 5px;
-        }
-        
-        .error-msg {
-            font-size: 17px;
-            height: 26px;
-            margin-top: 5px;
-        }
-
-        .item.desktop {
-            margin-top: 0;
-        }
-    }
-
-    #top-container {
+    .login {
+        height: 100vh;
         display: flex;
         flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .login-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+    }
+
+    #login-content {
+        width: 460px; // Adjusted to accommodate the password input width and padding
+        margin: 0 auto;
+    }
+
+    .dark-background-card {
+        background-color: rgba(0, 0, 0, 0.6);
+        border-radius: 10px;
+        padding: 30px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    #login-form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
     }
 
     .item.user {
         margin-bottom: 13px;
     }
 
-    #login-content {
-        margin-top: 11.5vh;
-    }
-
-    @media (min-height: 850px) {
-        #login-content {
-            margin-top: 14vh;
-        }
-    }
-
-    #login-content.no-avatar {
-        margin-top: calc(50vh - 165px);
-
-        .item.user {
-            margin-top: 0;
-        }
-
-        .item.desktop {
-            margin-top: calc(5.5vh - 46px);
-        }
-    }
-
-    #avatar-image {
-        height: 200px;
-    }
-
-    .round {
-        border-radius: 100px;
-    }
-
-    .item.user {
-        margin-top: 3.5vh;
-    }
-
     #password {
         font-weight: 300;
-    }
-
-    #password, #password:focus {
-        outline: none;
-    }
-
-    #password::placeholder {
-        color: rgba($secondary-color, 0.55);
-        opacity: 1;
-    }
-
-    #password.italic::placeholder {
-        font-style: italic;
-    }
-
-    #password {
         margin-top: 4.5vh;
-                
         font-family: 'Lato', 'Noto Sans', sans-serif;
-
         background: $password-field-background;
         caret-color: $password-field-caret;
         color: $secondary-color;
-
         padding-left: 15px;
         padding-right: 15px;
         font-size: 24px;
-
         width: 400px;
         height: 54px;
-
         border: none;
         border-bottom: solid 3px;
         border-top-left-radius: 4px;
         border-top-right-radius: 4px;
-    }
 
-    #password.error {
-        border-bottom-color: $error-color !important;
-    }
+        &:focus {
+            outline: none;
+        }
 
-    #password.immutable {
-        display: inline-block;
-        background: $password-field-background-setup;
-        border-bottom-width: 6px;
+        &::placeholder {
+            color: rgba($secondary-color, 0.55);
+            opacity: 1;
+        }
+
+        &.italic::placeholder {
+            font-style: italic;
+        }
+
+        &.error {
+            border-bottom-color: $error-color !important;
+        }
+
+        &.immutable {
+            display: inline-block;
+            background: $password-field-background-setup;
+            border-bottom-width: 6px;
+        }
     }
 
     #info {
         color: rgba(255, 255, 255, 0.875);
-
         font-family: 'Lato', 'Noto Sans', sans-serif;
         font-size: 22px;
         font-weight: 300;
-
         text-align: center;
-
         margin-top: 15px;
         height: 31px;
     }
         
     .error-msg {
         color: $error-color;
-
         font-family: 'Lato', 'Noto Sans', sans-serif;        
         font-size: 22px;
-
         text-align: center;
-
         margin-top: 15px;
         height: 31px;
-    }
-
-    .item.desktop {
-        margin-top: calc(6vh - 46px);
-        display: inline-block;
-    }
-
-    .item.user {
-        display: inline-block;
     }
 
     #hibernate {
@@ -386,5 +276,33 @@
 
     .power-fade-enter {
         opacity: 0;
+    }
+
+    // Compact mode styles
+    .login.compact {
+        #login-content {
+            margin-top: 0;
+        }
+
+        #login-form {
+            text-align: left;
+            margin-left: 0;
+            margin-top: 0;
+        }
+
+        .item.user {
+            margin-bottom: 0;
+            margin-top: 0;
+        }
+
+        #password {
+            margin-top: 2.5vh;
+        }
+
+        #info, .error-msg {
+            font-size: 17px;
+            height: 26px;
+            margin-top: 5px;
+        }
     }
 </style>
