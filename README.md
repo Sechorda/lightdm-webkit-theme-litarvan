@@ -4,8 +4,9 @@ This is a minimal fork of Litarvan's LightDM WebKit2 theme, focusing solely on t
 
 ## Demo
 
-[Video Demo Placeholder]
-
+<video src="greeter-demo.webm" autoplay loop muted controls style="max-width: 100%; height: auto;">
+  Your browser does not support the video tag.
+</video>
 ## Installation
 
 1. Run the build script to generate the .tar.gz file:
