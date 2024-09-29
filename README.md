@@ -4,7 +4,7 @@ This is a minimal fork of Litarvan's LightDM WebKit2 theme, focusing solely on t
 
 ## Demo
 
-![Greeter Demo](greeter-demo.webm)
+![Greeter Demo](greeter-demo.gif)
 
 
 ## Installation
