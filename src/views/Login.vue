@@ -30,20 +30,20 @@
         <div v-if="isCompact" class="error-msg">
           {{ message }}
         </div>
-      </div>
-    </div>
 
-    <div v-if="!immutable">
-      <transition name="power-fade">
-        <div id="power-list" v-if="powerList">
-          <l-power-button v-if="canHibernate" id="hibernate" type="hibernate"></l-power-button>
-          <l-power-button v-if="canSuspend" id="suspend" type="suspend"></l-power-button>
-          <l-power-button id="reboot" type="restart"></l-power-button>
+        <div v-if="!immutable" class="power-buttons">
+          <transition name="power-fade">
+            <div id="power-list" v-if="powerList">
+              <l-power-button v-if="canHibernate" id="hibernate" type="hibernate"></l-power-button>
+              <l-power-button v-if="canSuspend" id="suspend" type="suspend"></l-power-button>
+              <l-power-button id="reboot" type="restart"></l-power-button>
+            </div>
+          </transition>
+
+          <div @click="powerList = !powerList">
+            <l-power-button id="shutdown" type="shutdown" :disabled="!powerList"></l-power-button>
+          </div>
         </div>
-      </transition>
-
-      <div @click="powerList = !powerList">
-        <l-power-button id="shutdown" type="shutdown" :disabled="!powerList"></l-power-button>
       </div>
     </div>
   </div>
@@ -192,6 +192,7 @@ export default {
   #login-content {
     width: 460px;
     margin: 0 auto;
+    position: relative;
   }
 
   .dark-background-card {
@@ -199,6 +200,7 @@ export default {
     border-radius: 10px;
     padding: 30px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.1); /* Added thin border */
   }
 
   #login-form {
@@ -271,28 +273,24 @@ export default {
     height: 31px;
   }
 
-  #hibernate {
-    position: absolute;
-    bottom: 245px;
-    right: 20px;
-  }
-
-  #suspend {
-    position: absolute;
-    bottom: 170px;
-    right: 20px;
-  }
-
-  #reboot {
-    position: absolute;
-    bottom: 95px;
-    right: 20px;
-  }
-
-  #shutdown {
+  .power-buttons {
     position: absolute;
     bottom: 20px;
     right: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+  }
+
+  #power-list {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    margin-bottom: 10px;
+  }
+
+  #hibernate, #suspend, #reboot {
+    margin-bottom: 10px;
   }
 
   @media (max-height: 850px) {
