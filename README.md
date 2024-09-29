@@ -1,52 +1,44 @@
 # Minimal LightDM WebKit2 Theme Fork
 
-This is a minimal fork of Litarvan's LightDM WebKit2 theme, focusing solely on the login page and its functionality. This theme is used in nody-greeter and is deployed as a .tar.gz file that is unzipped to `/usr/share/web-greeter/themes/litarvan`.
+This is a minimal fork of Litarvan's LightDM WebKit2 theme, focusing solely on the login page and its functionality. This theme is used in [nody-greeter](https://github.com/JezerM/nody-greeter) and is deployed as a .tar.gz file that is unzipped to `/usr/share/web-greeter/themes/sechorda`.
 
-## Overview
+## Demo
 
-- This fork contains only the essential login page functionality, changing settings via the config files(hardcoded)
-- It is designed to work with [nody-greeter](https://github.com/JezerM/nody-greeter).
-- The theme is distributed as a .tar.gz file.
-- Installation path: `/usr/share/web-greeter/themes/litarvan`
-
-## Building
-
-To generate the .tar.gz file:
-
-```
-./build.sh
-```
-
-This will create a .tar.gz file in the current directory.
+[Video Demo Placeholder]
 
 ## Installation
 
-1. Run the build script to generate the .tar.gz file.
-2. Extract the contents of the .tar.gz file to `/usr/share/web-greeter/themes/litarvan`.
+1. Run the build script to generate the .tar.gz file:
+   ```
+   ./build.sh
+   ```
+2. Create the theme directory (if it doesn't exist) and extract the contents of the .tar.gz file:
+   ```
+   # Create the theme directory if it doesn't exist
+   sudo mkdir -p /usr/share/web-greeter/themes/sechorda
+   
+   # Extract the theme files into the directory
+   sudo tar -xvf lightdm-webkit-theme-sechorda-1.0.0.tar.gz -C /usr/share/web-greeter/themes/sechorda
+   ```
 3. Configure your greeter to use this theme (see Configuration section).
 
 ## Configuration
 
 ### Setting up with LightDM
 
-Inside `/etc/lightdm/lightdm.conf`, below a Seat configuration, add:
+Inside `/etc/lightdm/lightdm.conf`, update the greeter-session globally:
 
 ```
-greeter-session=nody-greeter
+sed -i 's/^greeter-session=.*/greeter-session=nody-greeter/' /etc/lightdm/lightdm.conf
 ```
 
 ### Configuring the theme
 
-To configure nody-greeter to use this theme, edit the `/etc/usr/lightdm/web-greeter.yml` file and modify the theme setting:
+To configure nody-greeter to use this theme, update the theme setting in `/etc/usr/lightdm/web-greeter.yml`:
 
-```yaml
-theme: litarvan
 ```
-
-## Customization
-
-- Backgrounds can be added to `/usr/share/backgrounds`.
-- The OS logo can be customized by replacing the file at `/usr/share/web-greeter/themes/litarvan/img/os.xxxxxxxx.png`.
+sed -i 's/^theme:.*/theme: sechorda/' /etc/usr/lightdm/web-greeter.yml
+```
 
 ## Original Theme Information
 
