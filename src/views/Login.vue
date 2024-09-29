@@ -44,99 +44,98 @@
 </template>
 
 <script>
-    import LPowerButton from '@/components/PowerButton.vue';
-    import LSelectItem from '@/components/SelectItem';
+import LPowerButton from '@/components/PowerButton.vue';
+import LSelectItem from '@/components/SelectItem';
 
-    import { settings } from '@/settings';
-    import { trans } from '@/translations';
+import { settings } from '@/settings';
 
-    export default {
-        name: 'l-login',
-        components: { LSelectItem, LPowerButton },
-        props: ['immutable', 'compact', 'preview'],
+export default {
+    name: 'l-login',
+    components: { LSelectItem, LPowerButton },
+    props: ['immutable', 'compact', 'preview'],
 
-        data() {
-            return {
-                canHibernate: lightdm.can_hibernate,
-                canSuspend: lightdm.can_suspend,
-                passwordLabel: trans('password'),
-                isCompact: this.immutable ? this.compact : settings.mode === 'compact',
-                settings,
-                powerList: false,
-                logging: false,
-                error: false,
-                info: '',
-                message: '',
-                loginInSession: false,
+    data() {
+        return {
+            canHibernate: lightdm.can_hibernate,
+            canSuspend: lightdm.can_suspend,
+            passwordLabel: 'Password', // Changed from trans('password')
+            isCompact: this.immutable ? this.compact : settings.mode === 'compact',
+            settings,
+            powerList: false,
+            logging: false,
+            error: false,
+            info: '',
+            message: '',
+            loginInSession: false,
 
-                password: ''
+            password: ''
+        }
+    },
+    mounted() {
+        window.addEventListener('keyup', this.keyup);
+        
+        if (!this.preview) {
+            this.cancel(); // cancel any old sessions
+            this.begin(); // begin a new login session to get any messages
+        }
+
+        setTimeout(() => {
+            let p = document.querySelector('#password');
+            p && p.focus();
+        }, 650);
+    },
+    beforeDestroy() {
+        window.removeEventListener('keyup', this.keyup);
+    },
+    methods: {
+        keyup(event) {
+            if (event.getModifierState("CapsLock")) {
+                this.info = 'Caps Lock is on'; // Changed from trans('capsLock')
+            } else {
+                this.info = '';
             }
         },
-        mounted() {
-            window.addEventListener('keyup', this.keyup);
-            
-            if (!this.preview) {
-                this.cancel(); // cancel any old sessions
-                this.begin(); // begin a new login session to get any messages
-            }
-
-            setTimeout(() => {
-                let p = document.querySelector('#password');
-                p && p.focus();
-            }, 650);
-        },
-        beforeDestroy() {
-            window.removeEventListener('keyup', this.keyup);
-        },
-        methods: {
-            keyup(event) {
-                if (event.getModifierState("CapsLock")) {
-                    this.info = trans('capsLock');
+        begin() {
+            this.loginInSession = true;
+            lightdm_begin_login(this.settings.user.username, () => {
+                setTimeout(() => lightdm_start('awesome'), 400);
+                this.$router.push(settings.disableFade ? '/base' : '/intro/login');
+            }, () => {
+                this.error = true;
+                this.password = '';
+                this.logging = false;
+                this.begin();
+            }, (msg) => {
+                this.error = true;
+                this.password = '';
+                this.logging = false;
+                // If we receive a message then the login session has already failed
+                // so wait for the user to submit another password before starting
+                // a new session to avoid an infinite loop
+                this.cancel();
+                if (this.message === '') {
+                    this.message = msg;
                 } else {
-                    this.info = '';
+                    this.message = `${this.message} ${msg}`;
                 }
-            },
-            begin() {
-                this.loginInSession = true;
-                lightdm_begin_login(this.settings.user.username, () => {
-                    setTimeout(() => lightdm_start('awesome'), 400);
-                    this.$router.push(settings.disableFade ? '/base' : '/intro/login');
-                }, () => {
-                    this.error = true;
-                    this.password = '';
-                    this.logging = false;
-                    this.begin();
-                }, (msg) => {
-                    this.error = true;
-                    this.password = '';
-                    this.logging = false;
-                    // If we receive a message then the login session has already failed
-                    // so wait for the user to submit another password before starting
-                    // a new session to avoid an infinite loop
-                    this.cancel();
-                    if (this.message === '') {
-                        this.message = msg;
-                    } else {
-                        this.message = `${this.message} ${msg}`;
-                    }
-                });
-            },
-            cancel() {
-                this.loginInSession = false;
-                lightdm_cancel_login(); 
-            },
-            submit() {
-                this.logging = true;
-                this.error = false;
-                this.message = '';
+            });
+        },
+        cancel() {
+            this.loginInSession = false;
+            lightdm_cancel_login(); 
+        },
+        submit() {
+            this.logging = true;
+            this.error = false;
+            this.message = '';
 
-                // Workaround for a form submit bug reloading the route
-                setTimeout(() => {
-                    lightdm_login(this.settings.user.username, this.password, !this.loginInSession);
-                }, 150);
-            }
+            // Workaround for a form submit bug reloading the route
+            setTimeout(() => {
+                lightdm_login(this.settings.user.username, this.password, !this.loginInSession);
+            }, 150);
         }
     }
+}
 </script>
 
 <style lang="scss" scoped>

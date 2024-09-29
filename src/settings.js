@@ -5,8 +5,6 @@ if (local === 'undefined') {
 }
 
 export let settings = (local ? JSON.parse(local) : null) || {
-    roundAvatar: false,
-    disableAvatar: true,
     disableZoom: false,
     clock12: false,
     disablePowerTexts: false,
@@ -31,18 +29,6 @@ save();
 
 export function save(s) {
     localStorage.setItem('settings', JSON.stringify(s ? settings = s : settings));
-}
-
-export function avatar(avatar) {
-    if (!avatar || avatar === '') {
-        return require('./assets/images/default_user.png');
-    }
-
-    if (avatar === 'litarvan') {
-        return require('./assets/images/litarvan.png');
-    }
-
-    return avatar;
 }
 
 console.log(' --> Loaded settings :');
