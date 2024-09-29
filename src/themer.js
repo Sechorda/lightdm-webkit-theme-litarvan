@@ -1,10 +1,10 @@
 import { settings } from './settings';
 
 export const DEFAULT_COLOR = '#249cea';
-const DEFAULT_BG = require('./assets/images/background.png');
+export const DEFAULT_VIDEO_BG = require('./assets/videos/background.webm');
 
 export let color = localStorage.getItem('color') || DEFAULT_COLOR;
-export let background = getBackground();
+export let videoBackground = getVideoBackground();
 
 export function hook(element, rules) {
     const style = element.style;
@@ -21,22 +21,21 @@ export function updateColor(hex) {
     document.documentElement.style.setProperty('--primary-color', color)
 }
 
-export function updateBG(bg) {
-    background = bg;
-    localStorage.setItem('background', bg);
+export function updateVideoBG(videoBg) {
+    videoBackground = videoBg;
+    localStorage.setItem('videoBackground', videoBg);
     if (window.greeter_comm) {
         greeter_comm.broadcast({
-            type: "change-background",
-            path: bg,
+            type: "change-video-background",
+            path: videoBg,
         })
     }
 }
 
-export async function backgrounds() {
-    const folder = greeter_config.branding.background_images_dir ||
-                    greeter_config.branding.background_images;
+export async function videoBackgrounds() {
+    const folder = greeter_config.branding.background_videos_dir;
     if (!folder) {
-        return [DEFAULT_BG];
+        return [DEFAULT_VIDEO_BG];
     }
 
     const recDirList = async (dir) => {
@@ -54,9 +53,9 @@ export async function backgrounds() {
         })
 
         for (const file of dirlist) {
-            if (!file.includes('.')) { // I didn't find any good ways to do it
+            if (!file.includes('.')) {
                 result = [...result, ...(await recDirList(file))];
-            } else if (!file.endsWith('.xml') && !file.endsWith('.stw')) { // Gnome and Arch backgrounds have strange files
+            } else if (file.endsWith('.webm')) {
                 result.push(file);
             }
         }
@@ -65,14 +64,14 @@ export async function backgrounds() {
 
     let result = await recDirList(folder);
 
-    return [DEFAULT_BG, ...result];
+    return [DEFAULT_VIDEO_BG, ...result];
 }
 
-function getBackground() {
-    if(settings.randomizeBG) {
-        const bgs = backgrounds();
-        return bgs[Math.floor(Math.random() * bgs.length)];
+function getVideoBackground() {
+    if(settings.randomizeVideoBG) {
+        const videoBgs = videoBackgrounds();
+        return videoBgs[Math.floor(Math.random() * videoBgs.length)];
     }
 
-    return localStorage.getItem('background') || DEFAULT_BG;
+    return localStorage.getItem('videoBackground') || DEFAULT_VIDEO_BG;
 }
