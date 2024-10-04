@@ -2,7 +2,7 @@
 
 This is a minimal fork of Litarvan's LightDM WebKit2 theme, focusing solely on the login page and its functionality. This theme is used in [nody-greeter](https://github.com/JezerM/nody-greeter) and is deployed as a .tar.gz file that is unzipped to `/usr/share/web-greeter/themes/sechorda`.
 
-## Demo
+## Demo (GIF reduces FPS)
 
 ![Greeter Demo](greeter-demo.gif)
 
